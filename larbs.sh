@@ -5,12 +5,14 @@
 
 ### OPTIONS AND VARIABLES ###
 
-while getopts ":a:r:b:p:h" o; do case "${o}" in
+while getopts ":a:r:b:p:h:R:L:" o; do case "${o}" in
 	h) printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -p: Dependencies and programs csv (local file or url)\\n  -a: AUR helper (must have pacman-like syntax)\\n  -h: Show this message\\n" && exit ;;
 	r) dotfilesrepo=${OPTARG} && git ls-remote "$dotfilesrepo" || exit ;;
 	b) repobranch=${OPTARG} ;;
 	p) progsfile=${OPTARG} ;;
 	a) aurhelper=${OPTARG} ;;
+  R) reposfile=${OPTARG} ;;
+  L) symlinksfile=${OPTARG} ;;
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit ;;
 esac done
 
@@ -154,6 +156,33 @@ finalize(){ \
 	dialog --title "All done!" --msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Luke" 12 80
 	}
 
+putgitrepos() {
+	(([ -f "$reposfile" ] && cat "$reposfile") || curl -Ls "$reposfile") | sed '/^#/d' | sed "s|~|$HOME|g" > /tmp/repos.csv
+  # ([ -f "$reposfile" ] && cp "$reposfile" /tmp/repos.csv) || curl -Ls "$reposfile" | sed '/^#/d' | sed "s|~|$HOME|g" > /tmp/repos.csv
+  total=$(wc -l < /tmp/repos.csv)
+  # aurinstalled=$(pacman -Qm | awk '{print $1}')
+  while IFS=, read -r repo destination comment; do
+    n=$((n+1))
+		printf "$destination"
+		printf "$repo"
+		# destination=$(echo "$destination" | sed "s|~|$HOME|g")
+    echo "$comment" | grep "^\".*\"$" >/dev/null 2>&1 && comment="$(echo "$comment" | sed "s/\(^\"\|\"$\)//g")"
+		putgitrepo "${repo}" "${destination}"
+  done < /tmp/repos.csv
+}
+
+createsymlinks() { \
+    echo "test"
+    echo "$symlinksfile"
+	  (([ -f "$symlinksfile" ] && cat "$symlinksfile") || curl -Ls "$symlinksfile") | sed '/^#/d' | sed "s|~|$HOME|g" > /tmp/symlinks.csv
+    while IFS=, read -r src dest comment; do
+        echo "test2"
+        echo "$dest"
+        echo "$comment" | grep "^\".*\"$" >/dev/null 2>&1 && comment="$(echo "$comment" | sed "s/\(^\"\|\"$\)//g")"
+		    ln -fsb "${src}" "${dest}"
+    done < /tmp/symlinks.csv
+  }
+
 ### THE ACTUAL SCRIPT ###
 
 ### This is how everything happens in an intuitive format and order.
@@ -229,3 +258,19 @@ echo "$edition" > "/home/$name/.local/share/larbs/wm"; chown "$name:wheel" "/hom
 # Last message! Install complete!
 finalize
 clear
+
+# pull specified git repos
+putgitrepos
+
+# enable services
+# sudo systemctl start docker.service
+# sudo systemctl enable docker.service
+# sudo systemctl start $vpn
+# sudo systemctl enable $vpn
+# sudo systemctl start insync
+# sudo systemctl enable insync
+insync start --headless
+insync set_autostart
+
+# create file links
+createsymlinks

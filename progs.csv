@@ -80,3 +80,38 @@ G,https://github.com/lukesmithxyz/dmenu.git,"runs commands and provides a UI for
 G,https://github.com/lukesmithxyz/st.git,"is my custom build of suckless's terminal emulator."
 G,https://github.com/lukesmithxyz/dwm.git,"is the window manager."
 ,slock,"allows you to lock your computer, and quickly unlock with your password."
+
+
+,emacs,"is an extensible text editor written in lisp."
+,adobe-source-code-pro-fonts,"is a font package used by spacemacs."
+A,insync,"syncs google drive to local disk."
+,pandoc,"is a universal document converter."
+A,nodejs-tern,"is A JavaScript code analyzer for deep, cross-editor language support."
+,aspell,"is a spell checker designed to replace ispell and it is used by emacs."
+,aspell-en,"is an English language package for aspell."
+,docker,"is a utility to pack, ship and run any application as a lightweight container."
+,docker-compose,
+,openvpn,"is a VPN daemon."
+A,1password-cli,"is a command line tool for the 1Password password manager."
+,wget,"is a non-interactive network downloader."
+,java-runtime-common,"is a package of common files for Java Runtime Environments"
+,java-environment-common,"is a package of common files for Java Development Kits"
+,jre-openjdk-headless,
+,jdk-openjdk,
+,sbt,
+,scala,"is an object-functional programming and scripting language for general software applications. "
+# get rid of "Can't locate AnyEvent/I3.pm in @INC (you may need to install the AnyEvent::I3 module)..." during i3-save-tree
+,perl-anyevent-i3,
+,postgresql,"is an object-relational database system."
+A,pspg,"is a Unix pager designed for work with tables. Designed for PostgreSQL, but MySQL is supported too."
+,keychain,"is an SSH and GPG key manager."
+A,zoom,
+,jq,
+,surf,
+,redshift,
+,anki,
+,texlive-most,"is LaTex package."
+,texlive-lang,"is LaTex language package."
+,pass,"is a password manager"
+A,pass-import,
+,virtualbox,"is a hypervisor used to run operating systems in a special environment"
